@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.CheckBox
 import androidx.fragment.app.DialogFragment
+import com.appyvet.materialrangebar.RangeBar
 import com.github.jaydeepw.matchfilter.R
 import com.github.jaydeepw.matchfilter.models.datasource.remote.restapi.Api
 
@@ -19,6 +20,7 @@ class FiltersDialogFragment : DialogFragment() {
     private var checkboxFavourites: CheckBox? = null
     private var cancelButton: Button? = null
     private var applyButton: Button? = null
+    private var rangeBar: RangeBar? = null
 
     companion object {
         const val DATA = "data"
@@ -37,6 +39,7 @@ class FiltersDialogFragment : DialogFragment() {
         checkboxFavourites = view.findViewById(R.id.checkboxFavourites)
         cancelButton = view.findViewById(R.id.buttonCancel)
         applyButton = view.findViewById(R.id.buttonApply)
+        rangeBar = view.findViewById(R.id.rangeBar)
 
         cancelButton?.setOnClickListener {
             dismiss()
@@ -53,6 +56,11 @@ class FiltersDialogFragment : DialogFragment() {
     private fun initUi() {
         checkboxHasPhotos?.isChecked = extras[Api.PARAM_HAS_PHOTO]?.toBoolean() ?: false
         checkboxFavourites?.isChecked = extras[Api.PARAM_IS_FAV]?.toBoolean() ?: false
+        val leftVal = extras[Api.PARAM_AGE_MIN]?.toFloat()
+        val rightVal = extras[Api.PARAM_AGE_MAX]?.toFloat()
+        if (leftVal != null && rightVal != null) {
+            rangeBar?.setRangePinsByValue(leftVal, rightVal)
+        }
     }
 
     private fun returnSelectedFilters() {
@@ -67,12 +75,17 @@ class FiltersDialogFragment : DialogFragment() {
             map[Api.PARAM_IS_FAV] = isFav
         }
 
-        val intent = Intent()
-        intent.apply {
-            putExtra(Api.PARAM_HAS_PHOTO, hasPhoto)
-            putExtra(Api.PARAM_IS_FAV, isFav)
+        val ageMin = rangeBar?.leftPinValue
+        if (ageMin != null) {
+            map[Api.PARAM_AGE_MIN] = ageMin
         }
 
+        val ageMax = rangeBar?.rightPinValue
+        if (ageMax != null) {
+            map[Api.PARAM_AGE_MAX] = ageMax
+        }
+
+        val intent = Intent()
         intent.putExtra(DATA, map)
         targetFragment?.onActivityResult(targetRequestCode, Activity.RESULT_OK, intent)
     }

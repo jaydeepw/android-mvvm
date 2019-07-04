@@ -103,8 +103,13 @@ class MainFragment : BaseFragment() {
         matchesRecyclerView?.layoutManager = LinearLayoutManager(context)
 
         // Access the RecyclerView Adapter and load the data into it
-        adapter = MatchesAdapter(matchesResponse.matches, context!!)
-        matchesRecyclerView?.adapter = adapter
+        val results = matchesResponse.matches
+        if (results?.size == 0) {
+            showMessage(getString(R.string.msg_no_results))
+        } else {
+            adapter = MatchesAdapter(results, context!!)
+            matchesRecyclerView?.adapter = adapter
+        }
     }
 
     private fun handleLoadingProgress(loading: Boolean) {
@@ -156,6 +161,7 @@ class MainFragment : BaseFragment() {
             val possiblyFilters = data?.getSerializableExtra(FiltersDialogFragment.DATA)
             if (possiblyFilters is HashMap<*, *>) {
                 filter = possiblyFilters as HashMap<String, String>
+                adapter?.clear()
                 reloadListWithFiltersApplied()
             }
         }

@@ -27,7 +27,7 @@
             android:layout_height="wrap_content">
 
         <com.appyvet.materialrangebar.RangeBar
-                android:id="@+id/rangebar"
+                android:id="@+id/rangeBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:mrb_barWeight="2dp"

@@ -23,5 +23,6 @@
     <string name="label_favourites">Favourites</string>
     <string name="label_apply">Apply</string>
     <string name="label_cancel">Cancel</string>
-    
+    <string name="msg_no_results">No results found</string>
+
 </resources>

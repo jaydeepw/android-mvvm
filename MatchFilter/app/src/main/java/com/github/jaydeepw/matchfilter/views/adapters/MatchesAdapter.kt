@@ -33,6 +33,11 @@ class MatchesAdapter(val items: MutableList<Match>?, val context: Context) : Rec
         items?.addAll(newItems)
         notifyDataSetChanged()
     }
+
+    fun clear() {
+        items?.clear()
+        notifyDataSetChanged()
+    }
 }
 
 class ViewHolder : RecyclerView.ViewHolder {
