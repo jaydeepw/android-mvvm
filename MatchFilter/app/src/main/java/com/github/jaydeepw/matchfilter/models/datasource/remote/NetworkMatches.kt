@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.github.jaydeepw.matchfilter.models.datasource.Loadable
 import com.github.jaydeepw.matchfilter.models.datasource.MatchesDataSource
+import com.github.jaydeepw.matchfilter.models.datasource.remote.restapi.Api
 import com.github.jaydeepw.matchfilter.models.entities.MatchResponse
 import com.github.jaydeepw.matchfilter.utils.DebugLog
 import retrofit2.Response
@@ -18,7 +19,7 @@ class NetworkMatches(private val loading: MutableLiveData<Boolean>) : MatchesDat
         // todo: make an API call here
         DebugLog.d("")
         onLoadingInProgress()
-        Thread.sleep(2000)
+        var observable = Api.getApi().getMatches(false)
         onLoadingComplete()
         return list
     }

@@ -32,7 +32,7 @@ class MainFragment : BaseFragment() {
         notificaitonsViewModel = ViewModelProvider.AndroidViewModelFactory
             .getInstance(activity?.application!!)
             .create(MainViewModel::class.java)
-        notificaitonsViewModel?.repository
+        notificaitonsViewModel
             ?.getMatches()
             ?.observe(this, Observer<Response<MatchResponse>> { response -> showList(response)})
 
