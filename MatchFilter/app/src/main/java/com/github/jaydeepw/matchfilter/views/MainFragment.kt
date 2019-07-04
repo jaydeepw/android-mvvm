@@ -53,6 +53,9 @@ class MainFragment : BaseFragment() {
 
         notificaitonsViewModel?.repository?.loading?.observe(this,
             Observer<Boolean> { isLoading -> handleLoadingProgress(isLoading) })
+
+        notificaitonsViewModel?.repository?.errorHandler?.observe(this,
+            Observer<String> { throwableMessage -> showMessage(Utils.Companion.parse(activity!!, throwableMessage)) })
     }
 
     private fun showList(response: Response<MatchResponse>?) {

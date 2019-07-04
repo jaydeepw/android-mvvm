@@ -41,5 +41,29 @@ class Utils {
             return resId
         }
 
+        fun parse(context: Context, messageFromThrowable: String): String {
+            var message: String = context.getString(R.string.msg_error_general)
+            // Throwable error message for Android OS version below 5.0 is "Failed to connect"
+            // And for 5.0 & above contains "Unable to resolve host"
+            if (messageFromThrowable.contains("Unable to resolve host")) {
+                message = context.getString(R.string.msg_no_internet)
+            } else if (messageFromThrowable.contains("Failed to connect") ||
+                messageFromThrowable.contains("REFUSED")) {
+                // if the server itself is not running on given IP/domain name
+                // Failed to connect to /127.0.0.1:3000
+                // ||
+                // On certain variants of Android, the HTTP stack returns
+                // a technical message `connect failed: ECONNREFUSED`
+                message = context.getString(R.string.error_server_connection_failed)
+            } else if (messageFromThrowable.contains("android_getaddrinfo")) {
+                // When the device network stack if offline, in such event
+                // device throws an exception
+                // android_getaddrinfo failed: EAI_NODATA (No address associated with hostname)
+                message = context.getString(R.string.error_server_connection_failed)
+            }
+
+            return message
+        }
+
     }   // end Companion object
 }

@@ -16,8 +16,12 @@ class MatchesRepository(private val app: Application) : MatchesDataSource {
         MutableLiveData<Boolean>()
     }
 
+    val errorHandler: MutableLiveData<String> by lazy {
+        MutableLiveData<String>()
+    }
+
     init {
-        networkSource = NetworkMatches(loading)
+        networkSource = NetworkMatches(loading, errorHandler)
     }
 
     override fun getMatches(): LiveData<Response<MatchResponse>> {

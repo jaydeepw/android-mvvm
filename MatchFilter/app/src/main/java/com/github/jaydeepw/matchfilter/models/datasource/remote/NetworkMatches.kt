@@ -12,7 +12,10 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import retrofit2.Response
 
-class NetworkMatches(private val loading: MutableLiveData<Boolean>) : MatchesDataSource, Loadable {
+class NetworkMatches(
+    private val loading: MutableLiveData<Boolean>,
+    private val errorHandler: MutableLiveData<String>
+) : MatchesDataSource, Loadable {
 
     private lateinit var subscription: Disposable
 
@@ -40,6 +43,7 @@ class NetworkMatches(private val loading: MutableLiveData<Boolean>) : MatchesDat
 
     private fun handleError(it: Throwable) {
         DebugLog.e("error: " + it.localizedMessage)
+        errorHandler.value = it.localizedMessage ?: it.message
     }
 
     private fun handleResponse(it: Response<MatchResponse>) {

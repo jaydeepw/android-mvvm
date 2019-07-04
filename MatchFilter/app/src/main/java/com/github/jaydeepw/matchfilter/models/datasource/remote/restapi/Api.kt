@@ -12,6 +12,8 @@ class Api {
 
     companion object {
 
+        const val PARAM_HAS_PHOTO = "hasPhoto"
+
         private val logLevel = HttpLoggingInterceptor.Level.BODY
 
         /**
