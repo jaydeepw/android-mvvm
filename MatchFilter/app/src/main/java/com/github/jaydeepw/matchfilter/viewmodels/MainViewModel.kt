@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import com.github.jaydeepw.matchfilter.models.datasource.repositories.MatchesRepository
-import com.github.jaydeepw.matchfilter.models.entities.Match
+import com.github.jaydeepw.matchfilter.models.entities.MatchResponse
 import retrofit2.Response
 
 class MainViewModel(app: Application) : AndroidViewModel(app) {
@@ -15,7 +15,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         repository = MatchesRepository(app)
     }
 
-    fun getMatches(): LiveData<Response<Match>> {
+    fun getMatches(): LiveData<Response<MatchResponse>> {
         return repository?.getMatches()!!
     }
 

@@ -5,7 +5,7 @@ import android.view.*
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.github.jaydeepw.matchfilter.R
-import com.github.jaydeepw.matchfilter.models.entities.Match
+import com.github.jaydeepw.matchfilter.models.entities.MatchResponse
 import com.github.jaydeepw.matchfilter.utils.DebugLog
 import com.github.jaydeepw.matchfilter.viewmodels.MainViewModel
 import retrofit2.Response
@@ -34,13 +34,13 @@ class MainFragment : BaseFragment() {
             .create(MainViewModel::class.java)
         notificaitonsViewModel?.repository
             ?.getMatches()
-            ?.observe(this, Observer<Response<Match>> { response -> showList(response)})
+            ?.observe(this, Observer<Response<MatchResponse>> { response -> showList(response)})
 
         notificaitonsViewModel?.repository?.loading?.observe(this,
             Observer<Boolean> { isLoading -> handleLoadingProgress(isLoading) })
     }
 
-    private fun showList(response: Response<Match>?) {
+    private fun showList(response: Response<MatchResponse>?) {
 
     }
 
