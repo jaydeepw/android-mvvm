@@ -8,12 +8,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.github.jaydeepw.matchfilter.R
 import com.github.jaydeepw.matchfilter.models.entities.MatchResponse
 import com.github.jaydeepw.matchfilter.utils.DebugLog
 import com.github.jaydeepw.matchfilter.utils.Utils
 import com.github.jaydeepw.matchfilter.viewmodels.MainViewModel
 import com.github.jaydeepw.matchfilter.views.adapters.MatchesAdapter
+import com.google.android.material.snackbar.Snackbar
 import retrofit2.Response
 
 class MainFragment : BaseFragment() {
@@ -21,8 +23,10 @@ class MainFragment : BaseFragment() {
     private var notificaitonsViewModel: MainViewModel? = null
     private var matchesRecyclerView: RecyclerView? = null
     private var progressCircular: ProgressBar? = null
+    private var pullToRefresh: SwipeRefreshLayout? = null
     private var adapter: MatchesAdapter? = null
     private var messageTextView: TextView? = null
+    private val filter: HashMap<String, String> = HashMap()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,13 +45,14 @@ class MainFragment : BaseFragment() {
         matchesRecyclerView = view.findViewById(R.id.matchesRecyclerView)
         progressCircular = view.findViewById(R.id.progressCircular)
         messageTextView = view.findViewById(R.id.messageTextView)
+        pullToRefresh = view.findViewById(R.id.pullToRefresh)
 
         notificaitonsViewModel = ViewModelProvider.AndroidViewModelFactory
             .getInstance(activity?.application!!)
             .create(MainViewModel::class.java)
 
         notificaitonsViewModel
-            ?.getMatches()
+            ?.getMatches(filter)
             ?.observe(this, Observer<Response<MatchResponse>> {
                     response -> showList(response)})
 
@@ -56,6 +61,15 @@ class MainFragment : BaseFragment() {
 
         notificaitonsViewModel?.repository?.errorHandler?.observe(this,
             Observer<String> { throwableMessage -> showMessage(Utils.Companion.parse(activity!!, throwableMessage)) })
+
+        initPullToRefresh()
+    }
+
+    private fun initPullToRefresh() {
+        pullToRefresh?.setOnRefreshListener {
+            notificaitonsViewModel
+                ?.getMatches(filter)
+        }
     }
 
     private fun showList(response: Response<MatchResponse>?) {
@@ -93,6 +107,8 @@ class MainFragment : BaseFragment() {
         } else {
             progressCircular?.visibility = View.GONE
         }
+
+        pullToRefresh?.isRefreshing = loading
     }
 
     private fun showMessage(messageResId: Int) {
@@ -100,8 +116,12 @@ class MainFragment : BaseFragment() {
     }
 
     private fun showMessage(message: String) {
-        messageTextView?.visibility = View.VISIBLE
-        messageTextView?.text =  message
+        if (adapter == null || adapter?.itemCount == 0) {
+            messageTextView?.visibility = View.VISIBLE
+            messageTextView?.text =  message
+        } else {
+            Snackbar.make(view!!, message, Snackbar.LENGTH_LONG).show()
+        }
     }
 
     private fun hideMessage() {

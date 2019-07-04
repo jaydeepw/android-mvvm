@@ -23,8 +23,8 @@ class NetworkMatches(
         MutableLiveData<Response<MatchResponse>>()
     }
 
-    override fun getMatches(): LiveData<Response<MatchResponse>> {
-        val observable = Api.getApi().getMatches(false)
+    override fun getMatches(map: HashMap<String, String>?): LiveData<Response<MatchResponse>> {
+        val observable = Api.getApi().getMatches(map)
         subscription = observable.observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(Schedulers.io())
             .doOnSubscribe { onLoadingInProgress() }

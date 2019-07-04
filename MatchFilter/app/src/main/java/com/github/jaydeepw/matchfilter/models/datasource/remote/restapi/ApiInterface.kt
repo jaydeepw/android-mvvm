@@ -4,9 +4,9 @@ import com.github.jaydeepw.matchfilter.models.entities.MatchResponse
 import io.reactivex.Observable
 import retrofit2.Response
 import retrofit2.http.GET
-import retrofit2.http.Query
+import retrofit2.http.QueryMap
 
 interface ApiInterface {
     @GET("/matches")
-    fun getMatches(@Query("hasPhoto") hasPhotos: Boolean?): Observable<Response<MatchResponse>>
+    fun getMatches(@QueryMap params: HashMap<String, String>?): Observable<Response<MatchResponse>>
 }

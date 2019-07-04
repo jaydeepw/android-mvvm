@@ -7,14 +7,22 @@
              app:layout_behavior="@string/appbar_scrolling_view_behavior"
              tools:context=".views.MainFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/matchesRecyclerView"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/pullToRefresh"
             android:layout_width="match_parent"
-            android:layout_gravity="center"
-            android:layout_height="match_parent"/>
+            android:layout_height="wrap_content">
+
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/matchesRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_gravity="center"
+                android:layout_height="match_parent"/>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
     <ProgressBar
-                android:id="@+id/progressCircular"
+            android:id="@+id/progressCircular"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_gravity="center"

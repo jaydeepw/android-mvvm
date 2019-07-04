@@ -24,7 +24,7 @@ class MatchesRepository(private val app: Application) : MatchesDataSource {
         networkSource = NetworkMatches(loading, errorHandler)
     }
 
-    override fun getMatches(): LiveData<Response<MatchResponse>> {
-        return networkSource?.getMatches()!!
+    override fun getMatches(map: HashMap<String, String>?): LiveData<Response<MatchResponse>> {
+        return networkSource?.getMatches(map)!!
     }
 }
