@@ -15,7 +15,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         repository = MatchesRepository(app)
     }
 
-    fun getNotifications(): LiveData<Response<Match>> {
+    fun getMatches(): LiveData<Response<Match>> {
         return repository?.getMatches()!!
     }
 
