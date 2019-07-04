@@ -18,4 +18,9 @@
 
     <string name="msg_response_null">No response from server</string>
     <string name="msg_no_internet">No internet connection</string>
+    <string name="label_filters">Filters</string>
+    <string name="label_has_photos">With Photos</string>
+    <string name="label_favourites">Favourites</string>
+    <string name="label_apply">Apply</string>
+    <string name="label_cancel">Cancel</string>
 </resources>

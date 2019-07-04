@@ -1,5 +1,6 @@
 package com.github.jaydeepw.matchfilter.views
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.ProgressBar
@@ -20,13 +21,13 @@ import retrofit2.Response
 
 class MainFragment : BaseFragment() {
 
-    private var notificaitonsViewModel: MainViewModel? = null
+    private var matchesViewModel: MainViewModel? = null
     private var matchesRecyclerView: RecyclerView? = null
     private var progressCircular: ProgressBar? = null
     private var pullToRefresh: SwipeRefreshLayout? = null
     private var adapter: MatchesAdapter? = null
     private var messageTextView: TextView? = null
-    private val filter: HashMap<String, String> = HashMap()
+    private var filter: HashMap<String, String> = HashMap()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,29 +48,34 @@ class MainFragment : BaseFragment() {
         messageTextView = view.findViewById(R.id.messageTextView)
         pullToRefresh = view.findViewById(R.id.pullToRefresh)
 
-        notificaitonsViewModel = ViewModelProvider.AndroidViewModelFactory
+        matchesViewModel = ViewModelProvider.AndroidViewModelFactory
             .getInstance(activity?.application!!)
             .create(MainViewModel::class.java)
 
-        notificaitonsViewModel
+        matchesViewModel
             ?.getMatches(filter)
             ?.observe(this, Observer<Response<MatchResponse>> {
                     response -> showList(response)})
 
-        notificaitonsViewModel?.repository?.loading?.observe(this,
+        matchesViewModel?.repository?.loading?.observe(this,
             Observer<Boolean> { isLoading -> handleLoadingProgress(isLoading) })
 
-        notificaitonsViewModel?.repository?.errorHandler?.observe(this,
+        matchesViewModel?.repository?.errorHandler?.observe(this,
             Observer<String> { throwableMessage -> showMessage(Utils.Companion.parse(activity!!, throwableMessage)) })
 
         initPullToRefresh()
     }
 
     private fun initPullToRefresh() {
+        hideMessage()
         pullToRefresh?.setOnRefreshListener {
-            notificaitonsViewModel
-                ?.getMatches(filter)
+            reloadListWithFiltersApplied()
         }
+    }
+
+    private fun reloadListWithFiltersApplied() {
+        matchesViewModel
+            ?.getMatches(filter)
     }
 
     private fun showList(response: Response<MatchResponse>?) {
@@ -137,8 +143,33 @@ class MainFragment : BaseFragment() {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
-            R.id.action_filter -> true
+            R.id.action_filter -> {
+                openFilters()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == INTENT_FILTERS_REQUEST_CODE) {
+            val possiblyFilters = data?.getSerializableExtra(FiltersDialogFragment.DATA)
+            if (possiblyFilters is HashMap<*, *>) {
+                filter = possiblyFilters as HashMap<String, String>
+                reloadListWithFiltersApplied()
+            }
+        }
+    }
+
+    private fun openFilters() {
+        val dialog = FiltersDialogFragment()
+        dialog.isCancelable = true
+        dialog.show(fragmentManager, "dialog")
+        dialog.extras = filter
+        dialog.setTargetFragment(this, INTENT_FILTERS_REQUEST_CODE)
+    }
+
+    companion object {
+        const val INTENT_FILTERS_REQUEST_CODE = 99
     }
 }

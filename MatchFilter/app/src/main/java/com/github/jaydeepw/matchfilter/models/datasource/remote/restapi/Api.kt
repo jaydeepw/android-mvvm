@@ -13,6 +13,9 @@ class Api {
     companion object {
 
         const val PARAM_HAS_PHOTO = "hasPhoto"
+        const val PARAM_IS_FAV = "isFavourite"
+        const val PARAM_AGE_MIN = "minAge"
+        const val PARAM_AGE_MAX = "maxAge"
 
         private val logLevel = HttpLoggingInterceptor.Level.BODY
 
