@@ -3,6 +3,7 @@ package com.github.jaydeepw.matchfilter.views
 import android.os.Bundle
 import android.view.*
 import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,6 +21,7 @@ class MainFragment : BaseFragment() {
     private var matchesRecyclerView: RecyclerView? = null
     private var progressCircular: ProgressBar? = null
     private var adapter: MatchesAdapter? = null
+    private var messageTextView: TextView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +39,7 @@ class MainFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         matchesRecyclerView = view.findViewById(R.id.matchesRecyclerView)
         progressCircular = view.findViewById(R.id.progressCircular)
+        messageTextView = view.findViewById(R.id.messageTextView)
 
         notificaitonsViewModel = ViewModelProvider.AndroidViewModelFactory
             .getInstance(activity?.application!!)
@@ -81,6 +84,15 @@ class MainFragment : BaseFragment() {
         } else {
             progressCircular?.visibility = View.GONE
         }
+    }
+
+    private fun showMessage(message: String) {
+        messageTextView?.visibility = View.VISIBLE
+        messageTextView?.text =  message
+    }
+
+    private fun hideMessage() {
+        messageTextView?.visibility = View.GONE
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
