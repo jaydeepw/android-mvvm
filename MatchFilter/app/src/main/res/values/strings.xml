@@ -15,4 +15,6 @@
     <string name="error_server_504gateway_timeout">Sorry! Remote server timed out</string>
     <string name="error_server_contract_broken">Sorry! Server broke the contract</string>
     <string name="msg_error_general">Sorry! Something went wrong</string>
+
+    <string name="msg_response_null">No response from server</string>
 </resources>

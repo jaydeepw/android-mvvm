@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.jaydeepw.matchfilter.R
 import com.github.jaydeepw.matchfilter.models.entities.MatchResponse
 import com.github.jaydeepw.matchfilter.utils.DebugLog
+import com.github.jaydeepw.matchfilter.utils.Utils
 import com.github.jaydeepw.matchfilter.viewmodels.MainViewModel
 import com.github.jaydeepw.matchfilter.views.adapters.MatchesAdapter
 import retrofit2.Response
@@ -59,22 +60,27 @@ class MainFragment : BaseFragment() {
 
         if (response == null) {
             DebugLog.e("API call not successful")
+            showMessage(R.string.msg_response_null)
             return
         }
 
         if (!response.isSuccessful) {
+            val message = Utils.Companion.parseNetworkCode(response.code())
+            showMessage(message)
             DebugLog.e("API call not successful")
             return
         }
-        val matchesReponse = response.body()
-        if (matchesReponse == null) {
+        val matchesResponse = response.body()
+        if (matchesResponse == null) {
             DebugLog.e("API call not successful")
             return
         }
+
+        hideMessage()
         matchesRecyclerView?.layoutManager = LinearLayoutManager(context)
 
         // Access the RecyclerView Adapter and load the data into it
-        adapter = MatchesAdapter(matchesReponse.matches, context!!)
+        adapter = MatchesAdapter(matchesResponse.matches, context!!)
         matchesRecyclerView?.adapter = adapter
     }
 
@@ -84,6 +90,10 @@ class MainFragment : BaseFragment() {
         } else {
             progressCircular?.visibility = View.GONE
         }
+    }
+
+    private fun showMessage(messageResId: Int) {
+        showMessage(getString(messageResId))
     }
 
     private fun showMessage(message: String) {
