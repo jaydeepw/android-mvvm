@@ -32,6 +32,7 @@ class MainFragment : BaseFragment() {
         notificaitonsViewModel = ViewModelProvider.AndroidViewModelFactory
             .getInstance(activity?.application!!)
             .create(MainViewModel::class.java)
+
         notificaitonsViewModel
             ?.getMatches()
             ?.observe(this, Observer<Response<MatchResponse>> { response -> showList(response)})
@@ -41,7 +42,7 @@ class MainFragment : BaseFragment() {
     }
 
     private fun showList(response: Response<MatchResponse>?) {
-
+        DebugLog.d("isSuccessful: ${response?.isSuccessful}")
     }
 
     private fun handleLoadingProgress(loading: Boolean) {
