@@ -32,6 +32,7 @@ class MainFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        DebugLog.i("")
     }
 
     override fun onCreateView(inflater: LayoutInflater,
