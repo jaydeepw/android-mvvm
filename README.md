@@ -1,6 +1,11 @@
-# android-mvvm
+# Android MVVM
 A simple Android app demonstrating the use of MVVM architecture pattern and automated tests for it
 
-# Instructions for usage
-- Use Android Studio stable version
-- Update the `SERVER_URL` to your local IP address in `app/build.gradle`
+# Problem Statement
+[Filtering matches](https://github.com/sparknetworks/coding_exercises_options/blob/master/filtering_matches/README.md)
+
+# Getting Started
+- Import the project using Android Studio stable version
+- Update the `SERVER_URL` to your local IP address in `app/build.gradle` in the build variant that you are using `release` or `debug`
+- Update `network_security_config.xml` in the app with your IP address to allow connecting to [this](https://github.com/jaydeepw/backend-snetworks) local server
+- Run the app on emulator or device

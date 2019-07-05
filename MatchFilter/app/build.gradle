@@ -27,7 +27,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
-            buildConfigField "String", "SERVER_URL", "\"http://192.168.31.14:3000/\""
+            buildConfigField "String", "SERVER_URL", "\"http://192.168.0.94:3000/\""
         }
     }
 }
