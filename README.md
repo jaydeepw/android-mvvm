@@ -10,6 +10,8 @@ A simple Android app demonstrating the use of MVVM architecture pattern and auto
 - Update the `SERVER_URL` to your local IP address in `app/build.gradle` in the build variant that you are using `release` or `debug`
 - Update `network_security_config.xml` in the app with your IP address to allow connecting to [this](https://github.com/jaydeepw/backend-snetworks) local server
 - Run the app on emulator or device
+- When running the app on device, ensure that both your server and mobile device, both are
+connected to the same Wifi network
 
 # Running UI tests
 - Clone the repository
