@@ -3,6 +3,7 @@ package com.github.jaydeepw.matchfilter;
 import android.content.Intent;
 import androidx.test.rule.ActivityTestRule;
 import com.github.jaydeepw.matchfilter.views.MainActivity;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -21,10 +22,13 @@ public class MainActivityTest {
     public ActivityTestRule<MainActivity> activityRule =
             new ActivityTestRule<>(MainActivity.class,false,false);
 
+    @Before
+    public void launchApp() {
+        activityRule.launchActivity(new Intent());
+    }
+
     @Test
     public void isAbleToLoadList() {
-        activityRule.launchActivity(new Intent());
-
         onView(withId(R.id.matchesRecyclerView)).check(matches(isDisplayed()));
         onView(withId(R.id.messageTextView)).check(matches(not(isDisplayed())));
         onView(withId(R.id.matchesRecyclerView)).check(withItemCount(greaterThan(1)));
@@ -32,10 +36,23 @@ public class MainActivityTest {
 
     @Test
     public void showFilterDialog() {
-        activityRule.launchActivity(new Intent());
-
         onView(withId(R.id.action_filter)).perform(click());
         onView(withId(R.id.buttonApply)).check(matches(isDisplayed()));
         onView(withId(R.id.buttonCancel)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void filterDialogIsCancellable() {
+        // given
+        onView(withId(R.id.action_filter)).perform(click());
+        onView(withId(R.id.buttonApply)).check(matches(isDisplayed()));
+        onView(withId(R.id.buttonCancel)).check(matches(isDisplayed()));
+
+        // when
+        onView(withId(R.id.buttonCancel)).perform(click());
+
+        // then
+        // Dialog is gone and recyclerview is back
+        onView(withId(R.id.matchesRecyclerView)).check(matches(isDisplayed()));
     }
 }
