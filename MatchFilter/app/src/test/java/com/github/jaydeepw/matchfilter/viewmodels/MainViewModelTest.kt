@@ -1,9 +1,10 @@
-package com.github.jaydeepw.matchfilter
+package com.github.jaydeepw.matchfilter.viewmodels
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
+import com.github.jaydeepw.matchfilter.MyApp
+import com.github.jaydeepw.matchfilter.RxImmediateSchedulerRule
 import com.github.jaydeepw.matchfilter.models.datasource.repositories.MatchesRepository
-import com.github.jaydeepw.matchfilter.viewmodels.MainViewModel
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -11,8 +12,7 @@ import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 
-
-class ViewModelTest {
+class MainViewModelTest {
 
     @get:Rule
     var rxSchedulersOverrideRule = RxImmediateSchedulerRule()
@@ -59,5 +59,4 @@ class ViewModelTest {
 
         Mockito.verify(repository).init()
     }
-
 }
