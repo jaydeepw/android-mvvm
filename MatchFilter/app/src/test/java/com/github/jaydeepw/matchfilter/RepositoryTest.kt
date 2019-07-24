@@ -14,8 +14,11 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.inOrder
 import org.mockito.MockitoAnnotations
 import retrofit2.Response
+
 
 class RepositoryTest {
 
@@ -85,6 +88,37 @@ class RepositoryTest {
         Assert.assertNull(networkMatches.list.value?.body())
         Assert.assertNotNull(networkMatches.list.value?.errorBody())
         Assert.assertEquals(400, networkMatches.list.value?.code())
+    }
+
+    @Test
+    fun checkLoadingBehavior() {
+        val networkMatches = NetworkMatches(api)
+        networkMatches.loading = loading
+        networkMatches.errorHandler = errorHandler
+
+        Mockito.`when`(api.getMatches(Mockito.any()))
+            .thenReturn(Observable.just(Response.success(MatchResponse())))
+
+        networkMatches.getMatches(Mockito.any())
+
+        val inOrder = inOrder(loading)
+        inOrder.verify(loading).value = true
+        inOrder.verify(loading).value = false
+    }
+
+    @Test
+    fun checkErrorBehavior() {
+        val networkMatches = NetworkMatches(api)
+        networkMatches.loading = loading
+        networkMatches.errorHandler = errorHandler
+
+        val exception = Exception("Failure")
+        `when`(api.getMatches(Mockito.any()))
+            .thenReturn(Observable.error<Response<MatchResponse>>(exception))
+
+        networkMatches.getMatches(Mockito.any())
+
+        Mockito.verify(errorHandler).value = "Failure"
     }
 
 }
