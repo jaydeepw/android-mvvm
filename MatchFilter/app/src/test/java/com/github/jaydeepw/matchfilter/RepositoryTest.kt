@@ -6,6 +6,8 @@ import com.github.jaydeepw.matchfilter.models.datasource.remote.NetworkMatches
 import com.github.jaydeepw.matchfilter.models.datasource.remote.restapi.ApiInterface
 import com.github.jaydeepw.matchfilter.models.entities.MatchResponse
 import io.reactivex.Observable
+import okhttp3.MediaType
+import okhttp3.ResponseBody
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -38,7 +40,7 @@ class RepositoryTest {
     }
 
     @Test
-    fun checkResponseOnApiCall() {
+    fun checkResponseSuccess() {
         val matchResponse = MatchResponse()
 
         val networkMatches = NetworkMatches(api)
@@ -51,4 +53,38 @@ class RepositoryTest {
         networkMatches.getMatches(Mockito.any())
         Assert.assertEquals(matchResponse, networkMatches.list.value?.body())
     }
+
+    @Test
+    fun checkResponseError500() {
+        val networkMatches = NetworkMatches(api)
+        networkMatches.loading = loading
+        networkMatches.errorHandler = errorHandler
+        val responseBody = ResponseBody.create(MediaType.parse("application/json" + "; charset=utf-8"), "")
+
+        Mockito.`when`(api.getMatches(Mockito.any()))
+            .thenReturn(Observable.just(Response.error(500, responseBody)))
+
+        networkMatches.getMatches(Mockito.any())
+        Assert.assertNull(networkMatches.list.value?.body())
+        Assert.assertNotNull(networkMatches.list.value?.errorBody())
+        Assert.assertEquals(500, networkMatches.list.value?.code())
+    }
+
+    @Test
+    fun checkResponseError400() {
+        val networkMatches = NetworkMatches(api)
+        networkMatches.loading = loading
+        networkMatches.errorHandler = errorHandler
+        val responseBody = ResponseBody.create(MediaType.parse("application/json" + "; charset=utf-8"),
+            "")
+
+        Mockito.`when`(api.getMatches(Mockito.any()))
+            .thenReturn(Observable.just(Response.error(400, responseBody)))
+
+        networkMatches.getMatches(Mockito.any())
+        Assert.assertNull(networkMatches.list.value?.body())
+        Assert.assertNotNull(networkMatches.list.value?.errorBody())
+        Assert.assertEquals(400, networkMatches.list.value?.code())
+    }
+
 }
