@@ -7,24 +7,22 @@ import com.github.jaydeepw.matchfilter.models.datasource.MatchesDataSource
 import com.github.jaydeepw.matchfilter.models.datasource.remote.NetworkMatches
 import com.github.jaydeepw.matchfilter.models.entities.MatchResponse
 import retrofit2.Response
+import javax.inject.Inject
 
-class MatchesRepository(private val app: Application) : MatchesDataSource {
+class MatchesRepository(app: Application) : MatchesDataSource {
+    // todo: dont pass in platform param here. Inject it.
+    @Inject
+    lateinit var networkSource: NetworkMatches
 
-    private var networkSource : NetworkMatches? = null
+    val loading: MutableLiveData<Boolean> = MutableLiveData()
 
-    val loading: MutableLiveData<Boolean> by lazy {
-        MutableLiveData<Boolean>()
-    }
-
-    val errorHandler: MutableLiveData<String> by lazy {
-        MutableLiveData<String>()
-    }
+    val errorHandler: MutableLiveData<String> = MutableLiveData()
 
     init {
-        networkSource = NetworkMatches(loading, errorHandler)
+        // (app as MyApp).appComponent.inject(this)
     }
 
     override fun getMatches(map: HashMap<String, String>?): LiveData<Response<MatchResponse>> {
-        return networkSource?.getMatches(map)!!
+        return networkSource.getMatches(map)
     }
 }

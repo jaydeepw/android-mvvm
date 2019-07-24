@@ -56,8 +56,11 @@ class MainFragment : BaseFragment() {
         matchesViewModel
             ?.getMatches(filter)
             ?.observe(this, Observer<Response<MatchResponse>> {
-                    response -> showList(response)})
+                    response -> showList(response)
+            })
 
+        DebugLog.i("--> matchesViewModel?.repository?.loading: " +
+                matchesViewModel?.repository?.loading)
         matchesViewModel?.repository?.loading?.observe(this,
             Observer<Boolean> { isLoading -> handleLoadingProgress(isLoading) })
 
@@ -114,6 +117,7 @@ class MainFragment : BaseFragment() {
     }
 
     private fun handleLoadingProgress(loading: Boolean) {
+        DebugLog.i("--> loading: $loading")
         if (loading) {
             progressCircular?.visibility = View.VISIBLE
         } else {

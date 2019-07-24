@@ -52,7 +52,7 @@ public class NetworkMatchesTest {
         MockitoAnnotations.initMocks(this);
 
         // Get a reference to the class under test
-        networkMatches = new NetworkMatches(loading, error);
+        // networkMatches = new NetworkMatches(loading, error);
     }
 
     @Test

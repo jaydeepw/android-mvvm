@@ -3,16 +3,17 @@ package com.github.jaydeepw.matchfilter.viewmodels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import com.github.jaydeepw.matchfilter.MyApp
 import com.github.jaydeepw.matchfilter.models.datasource.repositories.MatchesRepository
 import com.github.jaydeepw.matchfilter.models.entities.MatchResponse
 import retrofit2.Response
 
 class MainViewModel(app: Application) : AndroidViewModel(app) {
 
-    var repository: MatchesRepository? = null
+    val repository: MatchesRepository = MatchesRepository(app)
 
     init {
-        repository = MatchesRepository(app)
+        (app as MyApp).appComponent.inject(repository)
     }
 
     fun getMatches(map: HashMap<String, String>?): LiveData<Response<MatchResponse>> {

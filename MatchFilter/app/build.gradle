@@ -20,14 +20,14 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
-            buildConfigField "String", "SERVER_URL", "\"http://192.168.0.96:3000/\""
+            buildConfigField "String", "SERVER_URL", "\"http://192.168.31.14:3000/\""
         }
 
         debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
-            buildConfigField "String", "SERVER_URL", "\"http://192.168.0.94:3000/\""
+            buildConfigField "String", "SERVER_URL", "\"http://192.168.31.14:3000/\""
         }
     }
 }
@@ -81,5 +81,5 @@ dependencies {
     androidTestImplementation 'com.android.support.test:rules:1.0.2'
 
     testImplementation 'org.mockito:mockito-core:2.27.0'
-    testImplementation 'android.arch.core:core-testing:1.1.1-alpha3'
+    testImplementation 'android.arch.core:core-testing:1.1.1'
 }
