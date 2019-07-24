@@ -14,12 +14,12 @@ import retrofit2.Response
 import javax.inject.Inject
 
 class NetworkMatches @Inject constructor(
-    var loading: MutableLiveData<Boolean>,
     var errorHandler: MutableLiveData<String>,
     var api: ApiInterface
 ) : MatchesDataSource, Loadable {
 
     private lateinit var subscription: Disposable
+    lateinit var loading: MutableLiveData<Boolean>
 
     val list: MutableLiveData<Response<MatchResponse>> = MutableLiveData()
 
@@ -35,12 +35,12 @@ class NetworkMatches @Inject constructor(
     }
 
     override fun onLoadingInProgress() {
-        loading.value = true
+        loading?.value = true
         DebugLog.i("--> true")
     }
 
     override fun onLoadingComplete() {
-        loading.value = false
+        loading?.value = false
         DebugLog.i("--> false")
     }
 

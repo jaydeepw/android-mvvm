@@ -1,28 +1,28 @@
 package com.github.jaydeepw.matchfilter.models.datasource.repositories
 
-import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.github.jaydeepw.matchfilter.models.datasource.MatchesDataSource
 import com.github.jaydeepw.matchfilter.models.datasource.remote.NetworkMatches
 import com.github.jaydeepw.matchfilter.models.entities.MatchResponse
+import com.github.jaydeepw.matchfilter.utils.DebugLog
 import retrofit2.Response
 import javax.inject.Inject
 
-class MatchesRepository(app: Application) : MatchesDataSource {
-    // todo: dont pass in platform param here. Inject it.
+class MatchesRepository(var loading: MutableLiveData<Boolean>) : MatchesDataSource {
+
     @Inject
     lateinit var networkSource: NetworkMatches
 
-    val loading: MutableLiveData<Boolean> = MutableLiveData()
-
     val errorHandler: MutableLiveData<String> = MutableLiveData()
 
-    init {
-        // (app as MyApp).appComponent.inject(this)
+    fun init() {
+        networkSource.loading = loading
     }
 
     override fun getMatches(map: HashMap<String, String>?): LiveData<Response<MatchResponse>> {
-        return networkSource.getMatches(map)
+        var list = networkSource.getMatches(map)
+        DebugLog.i("--> list: $list")
+        return list
     }
 }

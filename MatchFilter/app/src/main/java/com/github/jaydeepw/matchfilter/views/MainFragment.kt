@@ -5,11 +5,13 @@ import android.os.Bundle
 import android.view.*
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.github.jaydeepw.matchfilter.MyApp
 import com.github.jaydeepw.matchfilter.R
 import com.github.jaydeepw.matchfilter.models.entities.MatchResponse
 import com.github.jaydeepw.matchfilter.utils.DebugLog
@@ -18,6 +20,7 @@ import com.github.jaydeepw.matchfilter.viewmodels.MainViewModel
 import com.github.jaydeepw.matchfilter.views.adapters.MatchesAdapter
 import com.google.android.material.snackbar.Snackbar
 import retrofit2.Response
+import javax.inject.Inject
 
 class MainFragment : BaseFragment() {
 
@@ -29,10 +32,14 @@ class MainFragment : BaseFragment() {
     private var messageTextView: TextView? = null
     private var filter: HashMap<String, String> = HashMap()
 
+    @Inject
+    lateinit var loading: MutableLiveData<Boolean>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         DebugLog.i("")
+        (activity?.application!! as MyApp).appComponent.inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater,
@@ -53,6 +60,9 @@ class MainFragment : BaseFragment() {
             .getInstance(activity?.application!!)
             .create(MainViewModel::class.java)
 
+        matchesViewModel?.loading = loading
+        matchesViewModel?.init()
+
         matchesViewModel
             ?.getMatches(filter)
             ?.observe(this, Observer<Response<MatchResponse>> {
@@ -60,8 +70,8 @@ class MainFragment : BaseFragment() {
             })
 
         DebugLog.i("--> matchesViewModel?.repository?.loading: " +
-                matchesViewModel?.repository?.loading)
-        matchesViewModel?.repository?.loading?.observe(this,
+                matchesViewModel?.loading)
+        matchesViewModel?.loading?.observe(this,
             Observer<Boolean> { isLoading -> handleLoadingProgress(isLoading) })
 
         matchesViewModel?.repository?.errorHandler?.observe(this,
