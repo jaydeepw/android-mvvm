@@ -1,8 +1,9 @@
-package com.github.jaydeepw.matchfilter
+package com.github.jaydeepw.matchfilter.models.datasource.remote
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
-import com.github.jaydeepw.matchfilter.models.datasource.remote.NetworkMatches
+import androidx.lifecycle.Observer
+import com.github.jaydeepw.matchfilter.RxImmediateSchedulerRule
 import com.github.jaydeepw.matchfilter.models.datasource.remote.restapi.ApiInterface
 import com.github.jaydeepw.matchfilter.models.entities.MatchResponse
 import io.reactivex.Observable
@@ -15,11 +16,10 @@ import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
-import org.mockito.Mockito.inOrder
 import org.mockito.MockitoAnnotations
 import retrofit2.Response
 
-class NetworkRepositoryTest {
+class NetworkMatchesTest {
 
     @get:Rule
     var rxSchedulersOverrideRule = RxImmediateSchedulerRule()
@@ -38,7 +38,32 @@ class NetworkRepositoryTest {
 
     @Before
     fun setupTasksViewModel() {
+        // Mockito has a very convenient way to inject mocks by using the @Mock annotation. To
+        // inject the mocks in the test the initMocks method needs to be called.
         MockitoAnnotations.initMocks(this)
+
+        // Get a reference to the class under test
+        // networkMatches = new NetworkMatches(loading, error);
+    }
+
+    @Test
+    fun getMatches() {
+        // given
+        val observer = Mockito.mock(Observer::class.java) as Observer<Response<MatchResponse>>
+        val networkMatches = NetworkMatches(api)
+        networkMatches.loading = loading
+        networkMatches.errorHandler = errorHandler
+
+        // when
+        val matchResponse = MatchResponse()
+        val response = Response.success(matchResponse)
+        `when`(api.getMatches(Mockito.any()))
+            .thenReturn(Observable.just(response))
+        val liveData = networkMatches.getMatches(Mockito.any())
+        liveData.observeForever(observer)
+
+        // then
+        Mockito.verify(observer).onChanged(response)
     }
 
     @Test
@@ -49,7 +74,7 @@ class NetworkRepositoryTest {
         networkMatches.loading = loading
         networkMatches.errorHandler = errorHandler
 
-        Mockito.`when`(api.getMatches(Mockito.any()))
+        `when`(api.getMatches(Mockito.any()))
             .thenReturn(Observable.just(Response.success(matchResponse)))
 
         networkMatches.getMatches(Mockito.any())
@@ -77,7 +102,8 @@ class NetworkRepositoryTest {
         val networkMatches = NetworkMatches(api)
         networkMatches.loading = loading
         networkMatches.errorHandler = errorHandler
-        val responseBody = ResponseBody.create(MediaType.parse("application/json" + "; charset=utf-8"),
+        val responseBody = ResponseBody.create(
+            MediaType.parse("application/json" + "; charset=utf-8"),
             "")
 
         Mockito.`when`(api.getMatches(Mockito.any()))
@@ -100,7 +126,7 @@ class NetworkRepositoryTest {
 
         networkMatches.getMatches(Mockito.any())
 
-        val inOrder = inOrder(loading)
+        val inOrder = Mockito.inOrder(loading)
         inOrder.verify(loading).value = true
         inOrder.verify(loading).value = false
     }
@@ -112,12 +138,11 @@ class NetworkRepositoryTest {
         networkMatches.errorHandler = errorHandler
 
         val exception = Exception("Failure")
-        `when`(api.getMatches(Mockito.any()))
+        Mockito.`when`(api.getMatches(Mockito.any()))
             .thenReturn(Observable.error<Response<MatchResponse>>(exception))
 
         networkMatches.getMatches(Mockito.any())
 
         Mockito.verify(errorHandler).value = "Failure"
     }
-
 }
