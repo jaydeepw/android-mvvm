@@ -4,29 +4,25 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.github.jaydeepw.matchfilter.MyApp
 import com.github.jaydeepw.matchfilter.models.datasource.repositories.MatchesRepository
 import com.github.jaydeepw.matchfilter.models.entities.MatchResponse
-import com.github.jaydeepw.matchfilter.utils.DebugLog
 import retrofit2.Response
 
 class MainViewModel(var app: Application) : AndroidViewModel(app) {
 
-    var repository: MatchesRepository? = null
+    lateinit var repository: MatchesRepository
     lateinit var loading: MutableLiveData<Boolean>
     lateinit var errorHandler: MutableLiveData<String>
 
-    fun init() {
-        repository = MatchesRepository(loading, errorHandler)
-        (app as MyApp).appComponent.inject(repository!!)
-        repository?.init()
+    fun init(repo: MatchesRepository) {
+        this.repository = repo
+        repository.loading = loading
+        repository.errorHandler = errorHandler
+        repository.init()
     }
 
     fun getMatches(map: HashMap<String, String>?): LiveData<Response<MatchResponse>> {
-        DebugLog.i("--> repository: $repository")
-        val list = repository?.getMatches(map)
-        DebugLog.i("--> list: $list")
-        return list!!
+        return repository.getMatches(map)
     }
 
 }

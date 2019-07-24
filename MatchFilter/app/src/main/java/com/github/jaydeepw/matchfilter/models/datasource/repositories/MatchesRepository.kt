@@ -5,17 +5,15 @@ import androidx.lifecycle.MutableLiveData
 import com.github.jaydeepw.matchfilter.models.datasource.MatchesDataSource
 import com.github.jaydeepw.matchfilter.models.datasource.remote.NetworkMatches
 import com.github.jaydeepw.matchfilter.models.entities.MatchResponse
-import com.github.jaydeepw.matchfilter.utils.DebugLog
 import retrofit2.Response
 import javax.inject.Inject
 
-class MatchesRepository(
-    var loading: MutableLiveData<Boolean>,
-    var errorHandler: MutableLiveData<String>
+class MatchesRepository @Inject constructor(
+    private var networkSource: NetworkMatches
 ) : MatchesDataSource {
 
-    @Inject
-    lateinit var networkSource: NetworkMatches
+    lateinit var loading: MutableLiveData<Boolean>
+    lateinit var errorHandler: MutableLiveData<String>
 
     fun init() {
         networkSource.loading = loading
@@ -23,8 +21,6 @@ class MatchesRepository(
     }
 
     override fun getMatches(map: HashMap<String, String>?): LiveData<Response<MatchResponse>> {
-        var list = networkSource.getMatches(map)
-        DebugLog.i("--> list: $list")
-        return list
+        return networkSource.getMatches(map)
     }
 }

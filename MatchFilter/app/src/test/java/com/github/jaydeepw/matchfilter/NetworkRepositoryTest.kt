@@ -19,8 +19,7 @@ import org.mockito.Mockito.inOrder
 import org.mockito.MockitoAnnotations
 import retrofit2.Response
 
-
-class RepositoryTest {
+class NetworkRepositoryTest {
 
     @get:Rule
     var rxSchedulersOverrideRule = RxImmediateSchedulerRule()

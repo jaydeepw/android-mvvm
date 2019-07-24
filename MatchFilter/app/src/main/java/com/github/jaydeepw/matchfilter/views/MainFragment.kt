@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.github.jaydeepw.matchfilter.MyApp
 import com.github.jaydeepw.matchfilter.R
+import com.github.jaydeepw.matchfilter.models.datasource.repositories.MatchesRepository
 import com.github.jaydeepw.matchfilter.models.entities.MatchResponse
 import com.github.jaydeepw.matchfilter.utils.DebugLog
 import com.github.jaydeepw.matchfilter.utils.Utils
@@ -37,6 +38,9 @@ class MainFragment : BaseFragment() {
 
     @Inject
     lateinit var errorHandler : MutableLiveData<String>
+
+    @Inject
+    lateinit var repository : MatchesRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,7 +69,7 @@ class MainFragment : BaseFragment() {
 
         matchesViewModel?.loading = loading
         matchesViewModel?.errorHandler = errorHandler
-        matchesViewModel?.init()
+        matchesViewModel?.init(repository)
 
         matchesViewModel
             ?.getMatches(filter)
