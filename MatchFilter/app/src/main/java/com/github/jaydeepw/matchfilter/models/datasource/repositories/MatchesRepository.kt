@@ -9,15 +9,17 @@ import com.github.jaydeepw.matchfilter.utils.DebugLog
 import retrofit2.Response
 import javax.inject.Inject
 
-class MatchesRepository(var loading: MutableLiveData<Boolean>) : MatchesDataSource {
+class MatchesRepository(
+    var loading: MutableLiveData<Boolean>,
+    var errorHandler: MutableLiveData<String>
+) : MatchesDataSource {
 
     @Inject
     lateinit var networkSource: NetworkMatches
 
-    val errorHandler: MutableLiveData<String> = MutableLiveData()
-
     fun init() {
         networkSource.loading = loading
+        networkSource.errorHandler = errorHandler
     }
 
     override fun getMatches(map: HashMap<String, String>?): LiveData<Response<MatchResponse>> {

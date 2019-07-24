@@ -6,7 +6,6 @@ import com.github.jaydeepw.matchfilter.models.datasource.Loadable
 import com.github.jaydeepw.matchfilter.models.datasource.MatchesDataSource
 import com.github.jaydeepw.matchfilter.models.datasource.remote.restapi.ApiInterface
 import com.github.jaydeepw.matchfilter.models.entities.MatchResponse
-import com.github.jaydeepw.matchfilter.utils.DebugLog
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
@@ -14,12 +13,12 @@ import retrofit2.Response
 import javax.inject.Inject
 
 class NetworkMatches @Inject constructor(
-    var errorHandler: MutableLiveData<String>,
     var api: ApiInterface
 ) : MatchesDataSource, Loadable {
 
     private lateinit var subscription: Disposable
     lateinit var loading: MutableLiveData<Boolean>
+    lateinit var errorHandler: MutableLiveData<String>
 
     val list: MutableLiveData<Response<MatchResponse>> = MutableLiveData()
 
@@ -35,17 +34,14 @@ class NetworkMatches @Inject constructor(
     }
 
     override fun onLoadingInProgress() {
-        loading?.value = true
-        DebugLog.i("--> true")
+        loading.value = true
     }
 
     override fun onLoadingComplete() {
-        loading?.value = false
-        DebugLog.i("--> false")
+        loading.value = false
     }
 
     private fun handleError(it: Throwable) {
-        DebugLog.e("--> error: " + it.localizedMessage)
         errorHandler.value = it.localizedMessage ?: it.message
     }
 

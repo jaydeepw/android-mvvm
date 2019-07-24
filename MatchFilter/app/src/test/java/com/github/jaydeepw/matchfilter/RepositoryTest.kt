@@ -41,7 +41,10 @@ class RepositoryTest {
     fun checkResponseOnApiCall() {
         val matchResponse = MatchResponse()
 
-        val networkMatches = NetworkMatches(errorHandler, api)
+        val networkMatches = NetworkMatches(api)
+        networkMatches.loading = loading
+        networkMatches.errorHandler = errorHandler
+
         Mockito.`when`(api.getMatches(Mockito.any()))
             .thenReturn(Observable.just(Response.success(matchResponse)))
 

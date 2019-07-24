@@ -35,6 +35,9 @@ class MainFragment : BaseFragment() {
     @Inject
     lateinit var loading: MutableLiveData<Boolean>
 
+    @Inject
+    lateinit var errorHandler : MutableLiveData<String>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -61,6 +64,7 @@ class MainFragment : BaseFragment() {
             .create(MainViewModel::class.java)
 
         matchesViewModel?.loading = loading
+        matchesViewModel?.errorHandler = errorHandler
         matchesViewModel?.init()
 
         matchesViewModel
@@ -128,7 +132,7 @@ class MainFragment : BaseFragment() {
 
     private fun handleLoadingProgress(loading: Boolean) {
         DebugLog.i("--> loading: $loading")
-        if (loading) {
+        if (loading && adapter?.itemCount == 0) {
             progressCircular?.visibility = View.VISIBLE
         } else {
             progressCircular?.visibility = View.GONE

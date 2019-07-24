@@ -14,9 +14,10 @@ class MainViewModel(var app: Application) : AndroidViewModel(app) {
 
     var repository: MatchesRepository? = null
     lateinit var loading: MutableLiveData<Boolean>
+    lateinit var errorHandler: MutableLiveData<String>
 
     fun init() {
-        repository = MatchesRepository(loading)
+        repository = MatchesRepository(loading, errorHandler)
         (app as MyApp).appComponent.inject(repository!!)
         repository?.init()
     }
