@@ -7,7 +7,6 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -18,6 +17,7 @@ import com.github.jaydeepw.matchfilter.models.entities.MatchResponse
 import com.github.jaydeepw.matchfilter.utils.DebugLog
 import com.github.jaydeepw.matchfilter.utils.Utils
 import com.github.jaydeepw.matchfilter.viewmodels.MainViewModel
+import com.github.jaydeepw.matchfilter.viewmodels.ViewModelFactory
 import com.github.jaydeepw.matchfilter.views.adapters.MatchesAdapter
 import com.google.android.material.snackbar.Snackbar
 import retrofit2.Response
@@ -37,10 +37,10 @@ class MainFragment : BaseFragment() {
     lateinit var loading: MutableLiveData<Boolean>
 
     @Inject
-    lateinit var errorHandler : MutableLiveData<String>
+    lateinit var errorHandler: MutableLiveData<String>
 
     @Inject
-    lateinit var repository : MatchesRepository
+    lateinit var repository: MatchesRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,7 +49,8 @@ class MainFragment : BaseFragment() {
         (activity?.application!! as MyApp).appComponent.inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater,
+    override fun onCreateView(
+        inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
@@ -63,23 +64,26 @@ class MainFragment : BaseFragment() {
         messageTextView = view.findViewById(R.id.messageTextView)
         pullToRefresh = view.findViewById(R.id.pullToRefresh)
 
-        matchesViewModel = ViewModelProvider.AndroidViewModelFactory
-            .getInstance(activity?.application!!)
-            .create(MainViewModel::class.java)
+        matchesViewModel = ViewModelFactory.create(
+            activity?.application!!,
+            repository
+        )
 
-        matchesViewModel?.loading = loading
-        matchesViewModel?.errorHandler = errorHandler
-        matchesViewModel?.init(repository)
+        /*matchesViewModel = ViewModelProvider.AndroidViewModelFactory
+            .getInstance(activity?.application!!)
+            .create(MainViewModel::class.java)*/
+
+        repository.loading = loading
+        repository.errorHandler = errorHandler
+        repository.init()
 
         matchesViewModel
             ?.getMatches(filter)
-            ?.observe(this, Observer<Response<MatchResponse>> {
-                    response -> showList(response)
+            ?.observe(this, Observer<Response<MatchResponse>> { response ->
+                showList(response)
             })
 
-        DebugLog.i("--> matchesViewModel?.repository?.loading: " +
-                matchesViewModel?.loading)
-        matchesViewModel?.loading?.observe(this,
+        matchesViewModel?.repository?.loading?.observe(this,
             Observer<Boolean> { isLoading -> handleLoadingProgress(isLoading) })
 
         matchesViewModel?.repository?.errorHandler?.observe(this,
@@ -152,7 +156,7 @@ class MainFragment : BaseFragment() {
     private fun showMessage(message: String) {
         if (adapter == null || adapter?.itemCount == 0) {
             messageTextView?.visibility = View.VISIBLE
-            messageTextView?.text =  message
+            messageTextView?.text = message
         } else {
             Snackbar.make(view!!, message, Snackbar.LENGTH_LONG).show()
         }

@@ -16,8 +16,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showMainFragment() {
-        val ft = supportFragmentManager?.beginTransaction()
-        ft?.add(R.id.dynamic_fragment_frame_layout, MainFragment(), "main")
-        ft?.commit()
+        val fragmentTransaction = supportFragmentManager?.beginTransaction()
+        fragmentTransaction?.add(R.id.dynamic_fragment_frame_layout, MainFragment(), "main")
+        fragmentTransaction?.commit()
     }
 }
