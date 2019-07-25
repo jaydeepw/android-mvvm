@@ -16,4 +16,5 @@ connected to the same Wifi network
 # Running UI tests
 - Clone the repository
 - Open terminal and type `cd android-mvvm-snetworks/MatchFilter`
-- Run `./gradlew connectedAndroidTest`
+- Run UI tests `./gradlew connectedAndroidTest`
+- Run Unit tests `./gradlew test`
